@@ -16,10 +16,10 @@
 | **P07** | EVALUATION AND EVIDENCE | `COMPLETE` | Machine-readable evidence manifests block invalid code |
 | **P08** | GOVERNANCE | `COMPLETE` | Founder voting weights, contributor rules, and voting ledgers operational |
 | **P09** | GENESIS CHAMBER | `COMPLETE` | High-performance bare-metal benchmarks and Genesis release archive generated |
-| **P10** | COMMUNICATION | `IN_PROGRESS` | Secure IPC daemon validation and audit hardening underway |
-| **P11** | MIGRATION AND RESURRECTION | `IN_PROGRESS` | Multi-environment server-to-cloud extraction verification underway |
-| **P12** | AUTHORIZED CELL NETWORK | `IN_PROGRESS` | End-to-end multi-cell opt-in simulation underway |
-| **P13** | PUBLIC LAUNCH | `NOT_STARTED` | Pending full Genesis-to-Cell-to-PR demonstration |
+| **P10** | COMMUNICATION | `COMPLETE` | Secure IPC daemon validation and audit hardening locked down |
+| **P11** | MIGRATION AND RESURRECTION | `COMPLETE` | Multi-environment server-to-cloud extraction verified |
+| **P12** | AUTHORIZED CELL NETWORK | `COMPLETE` | Multi-cell decentralized opt-in simulation and cryptographic lineage operational |
+| **P13** | PUBLIC LAUNCH | `IN_PROGRESS` | Final public launch demonstration and PR submission path underway |
 
 ## 2. Phase Details & Audit Log
 
