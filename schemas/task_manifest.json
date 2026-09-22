@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SIPUniversalTaskManifest",
+  "type": "object",
+  "properties": {
+    "task_id": { "type": "string" },
+    "task_type": { "type": "string" },
+    "input_commitment": { "type": "string" },
+    "code_commitment": { "type": "string" },
+    "environment_commitment": { "type": "string" },
+    "resource_policy": {
+      "type": "object",
+      "properties": {
+        "cpu_seconds": { "type": "integer" },
+        "memory_mb": { "type": "integer" }
+      },
+      "required": ["cpu_seconds", "memory_mb"]
+    },
+    "verification_policy": {
+      "type": "object",
+      "properties": {
+        "required_level": { "type": "string" },
+        "min_independent_cells": { "type": "integer" }
+      },
+      "required": ["required_level"]
+    },
+    "expiry": { "type": "string", "format": "date-time" }
+  },
+  "required": ["task_id", "task_type", "code_commitment", "input_commitment"]
+}

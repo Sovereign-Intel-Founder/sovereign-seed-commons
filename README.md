@@ -1,6 +1,12 @@
-# Sovereign Seed Commons
+# Sovereign Intelligence Protocol (SIP)
 
-A Git-native experiment in persistent software identity, lifetime memory, temporary computation, evaluated self-improvement, community governance, and authorized research cells.
+A universal, GitHub-native execution mesh that unites fragmented infrastructure through cryptographic Proof-of-Execution. 
 
-## Core Rule
-Anyone may experiment in a fork or independent cell. No candidate becomes active in the canonical organism unless it passes rigorous evaluation and is accepted through a pull request.
+## Core Principles
+- **Compute is the Product, Proof is the Moat:** Tasks run in isolated environments and return immutable, cryptographically signed `evidence_return.json` receipts.
+- **Wrap the Chaos:** Deploy lightweight cells at the edge of fragmented infrastructure to translate raw outputs into cryptographic order.
+- **Structure is Law:** Deterministic execution replaces human voting and speculative token governance.
+
+## Profiles
+- **SIP Core (`/core`)**: Universal task lifecycle, Ed25519 verification, and evidence bundling.
+- **SIP Inference (`/profiles/inference`)**: Reference profile routing model inference tasks across decentralized providers.
