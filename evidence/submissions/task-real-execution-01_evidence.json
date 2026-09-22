@@ -1,0 +1,9 @@
+{
+  "cell_id": "cell-node-ext-01",
+  "exit_code": 0,
+  "parent_commit": "b60282cd0f524d7a0a4e0fbc84fec8c18d24de9b",
+  "stderr": "",
+  "stdout": "NODE_EXECUTION_VERIFIED_OK",
+  "stdout_hash": "728d8d0b060d5f5a5c45328b2c99a22d4f04e228d6e1dce159a9171c813c55e0",
+  "task_id": "task-real-execution-01"
+}
