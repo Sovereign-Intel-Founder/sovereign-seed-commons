@@ -1,0 +1,12 @@
+{
+  "protocol": "Sovereign Seed Commons",
+  "version": "1.0",
+  "weights": {
+    "@joshua445": {
+      "role": "Founder / Lead Architect",
+      "voting_power": 100,
+      "can_veto": true
+    }
+  },
+  "ledger_status": "initialized"
+}

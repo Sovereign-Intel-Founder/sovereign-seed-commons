@@ -14,8 +14,8 @@
 | **P05** | CANDIDATE-TO-PR PIPELINE | `COMPLETE` | Candidate generation produces PR-ready branches without direct activation |
 | **P06** | GITHUB ENFORCEMENT | `COMPLETE` | Branch protections, required checks, and codeowners successfully block direct pushes |
 | **P07** | EVALUATION AND EVIDENCE | `COMPLETE` | Machine-readable evidence manifests block invalid code |
-| **P08** | GOVERNANCE | `IN_PROGRESS` | Founder voting weights, contributor rules, and voting ledgers operational |
-| **P09** | GENESIS CHAMBER | `NOT_STARTED` | High-performance bare-metal benchmarks and Genesis release archive generated |
+| **P08** | GOVERNANCE | `COMPLETE` | Founder voting weights, contributor rules, and voting ledgers operational |
+| **P09** | GENESIS CHAMBER | `IN_PROGRESS` | High-performance bare-metal benchmarks and Genesis release archive generated |
 | **P10** | COMMUNICATION | `NOT_STARTED` | GitHub Issues successfully trigger bounded heartbeat objectives |
 | **P11** | MIGRATION AND RESURRECTION | `NOT_STARTED` | Complete server-to-cloud-to-server resurrection cycle verified |
 | **P12** | AUTHORIZED CELL NETWORK | `NOT_STARTED` | Explicit opt-in research cell mutation and evidence return verified |
