@@ -4,6 +4,7 @@ import tarfile
 import hashlib
 import sys
 from pathlib import Path
+from datetime import datetime, timezone
 
 BUNDLE_PATH = "genesis/resurrection_bundle.tar.gz"
 MANIFEST_PATH = "genesis/resurrection_manifest.json"
@@ -37,11 +38,13 @@ def export_state():
             print(f"[MIGRATE] Added memory lineage: {memory_dir}")
 
     bundle_hash = compute_sha256(Path(BUNDLE_PATH))
+    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    
     manifest = {
         "protocol": "Sovereign Seed Commons",
         "phase": "P11 Migration and Resurrection",
         "bundle_sha256": bundle_hash,
-        "timestamp": os.popen("date -u +%Y-%m-%dT%H:%M:%SZ").read().strip()
+        "timestamp": timestamp
     }
     
     with open(MANIFEST_PATH, "w") as mf:
@@ -69,11 +72,14 @@ def verify_and_resurrect(target_dir: str):
     target_path.mkdir(parents=True, exist_ok=True)
     
     with tarfile.open(BUNDLE_PATH, "r:gz") as tar:
-        # Secure extraction: prevent path traversal attacks (CVE-2007-4559)
         for member in tar.getmembers():
+            if member.issym() or member.islnk() or member.ischr() or member.isblk() or member.isfifo():
+                raise RuntimeError(f"[SECURITY ALERT] Unsafe file type detected in archive: {member.name}")
+                
             member_path = (target_path / member.name).resolve()
-            if not str(member_path).startswith(str(target_path)):
-                raise Exception(f"[SECURITY ALERT] Attempted path traversal in tar file: {member.name}")
+            if not member_path.is_relative_to(target_path):
+                raise RuntimeError(f"[SECURITY ALERT] Path traversal detected: {member.name}")
+                
         tar.extractall(path=target_path)
         
     print(f"[SUCCESS] Sovereign state successfully resurrected into {target_path}.")

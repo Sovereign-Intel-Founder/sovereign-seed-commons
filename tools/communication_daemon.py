@@ -5,11 +5,14 @@ import hmac
 import hashlib
 import sys
 import signal
+import re
 from pathlib import Path
 
 SOCKET_PATH = "/tmp/sovereign_comm.sock"
 LEDGER_PATH = Path("governance/voting_ledger.json")
-SECRET = b"sovereign_seed_internal_secure_transit"
+
+SECRET = os.environ.get("SOVEREIGN_COMM_SECRET", "").encode("utf-8")
+OBJECTIVE_ID_REGEX = re.compile(r"^[A-Za-z0-9._-]{1,128}$")
 
 def load_authorized_keys() -> list:
     if not LEDGER_PATH.exists():
@@ -24,6 +27,8 @@ def load_authorized_keys() -> list:
         sys.exit(1)
 
 def verify_signature(payload_bytes: bytes, signature: str, secret: bytes) -> bool:
+    if not secret:
+        return False
     expected = hmac.new(secret, payload_bytes, hashlib.sha256).hexdigest()
     return hmac.compare_digest(expected, signature)
 
@@ -34,6 +39,10 @@ def cleanup(signum, frame):
     sys.exit(0)
 
 def run_daemon():
+    if not SECRET:
+        print("[CRITICAL] SOVEREIGN_COMM_SECRET environment variable not set. Aborting securely.", file=sys.stderr)
+        sys.exit(1)
+
     signal.signal(signal.SIGINT, cleanup)
     signal.signal(signal.SIGTERM, cleanup)
     
@@ -45,7 +54,7 @@ def run_daemon():
         
     server = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     server.bind(SOCKET_PATH)
-    server.listen(128) # Backlog queue for high concurrency
+    server.listen(128)
     os.chmod(SOCKET_PATH, 0o600)
     
     print(f"[COMM] Hardened ingestion daemon active on domain socket: {SOCKET_PATH}")
@@ -71,6 +80,11 @@ def run_daemon():
                 if sender not in authorized_identities:
                     conn.sendall(b"ERROR: UNAUTHORIZED_SENDER")
                     continue
+                
+                objective_id = payload.get("objective_id", "")
+                if not OBJECTIVE_ID_REGEX.match(objective_id):
+                    conn.sendall(b"ERROR: MALFORMED_OBJECTIVE_ID")
+                    continue
                     
                 payload_bytes = json.dumps(payload, sort_keys=True).encode("utf-8")
                 if not signature or not verify_signature(payload_bytes, signature, SECRET):
@@ -79,9 +93,7 @@ def run_daemon():
                     
                 queue_dir = Path("experiments/queue")
                 queue_dir.mkdir(parents=True, exist_ok=True)
-                objective_id = payload.get("objective_id", "obj-unknown")
                 
-                # Atomic write pattern: write to tmp then rename
                 tmp_path = queue_dir / f".{objective_id}.tmp"
                 target_path = queue_dir / f"{objective_id}.json"
                 
