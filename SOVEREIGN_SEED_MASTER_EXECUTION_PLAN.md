@@ -1,29 +1,22 @@
 # Sovereign Seed Commons: Master Execution Plan
 
-> **Core Mandate:** A Git-native experiment in persistent software identity, lifetime memory, temporary computation, evaluated strictly via pull-request governance.
+> **Core Mandate:** GitHub is the durable state and governance layer. Cells are ephemeral, single-shot execution bodies. No permanent daemons, Unix sockets, or server infrastructures are permitted.
 
 ## 1. Project Phase Tracking & Status Overview
 
-| Phase | Title | Status | Acceptance Gate |
+| Phase | Title | Status | Acceptance Gate (Strict Criteria) |
 | :--- | :--- | :--- | :--- |
-| **P00** | CONTROL | `COMPLETE` | Master plan initialized, reviewed, and locked |
-| **P01** | REPOSITORY AND CONSTITUTION | `COMPLETE` | Required directories and core legal/governance documents in place |
-| **P02** | IDENTITY, MEMORY, AND LINEAGE | `COMPLETE` | Genesis identity, cryptographic keys, and structured JSONL logs established |
-| **P03** | STATE VALIDATOR | `COMPLETE` | `validate_state.py` passes positive and negative tamper tests |
-| **P04** | SAFE BOUNDED HEARTBEAT | `COMPLETE` | Bounded heartbeat cycle executes without shell injection or privilege escalation |
-| **P05** | CANDIDATE-TO-PR PIPELINE | `COMPLETE` | Candidate generation produces PR-ready branches without direct activation |
-| **P06** | GITHUB ENFORCEMENT | `COMPLETE` | Branch protections, required checks, and codeowners successfully block direct pushes |
-| **P07** | EVALUATION AND EVIDENCE | `COMPLETE` | Machine-readable evidence manifests block invalid code |
-| **P08** | GOVERNANCE | `COMPLETE` | Founder voting weights, contributor rules, and voting ledgers operational |
-| **P09** | GENESIS CHAMBER | `COMPLETE` | High-performance bare-metal benchmarks and Genesis release archive generated |
-| **P10** | COMMUNICATION | `COMPLETE` | Secure IPC daemon validation and audit hardening locked down |
-| **P11** | MIGRATION AND RESURRECTION | `COMPLETE` | Multi-environment server-to-cloud extraction verified |
-| **P12** | AUTHORIZED CELL NETWORK | `COMPLETE` | Multi-cell decentralized opt-in simulation and cryptographic lineage operational |
-| **P13** | PUBLIC LAUNCH | `IN_PROGRESS` | Final public launch demonstration and PR submission path underway |
+| **P00** | CONTROL | `COMPLETE` | Master plan initialized and locked |
+| **P01** | REPOSITORY AND CONSTITUTION | `COMPLETE` | Required directories and governance framework in place |
+| **P02** | IDENTITY, MEMORY, AND LINEAGE | `COMPLETE` | Cryptographic lineage chains established |
+| **P03** | STATE VALIDATOR | `COMPLETE` | Positive and negative tamper tests operational |
+| **P04** | SAFE BOUNDED EXECUTION | `COMPLETE` | Single-shot sandbox execution verified |
+| **P10** | EPHEMERAL COMMUNICATION | `IN_PROGRESS` | Single-shot cell receives objective, runs, writes evidence, and exits without daemon/socket (`tools/cell_runner.py`) |
+| **P11** | RELEASE & RESTORATION | `IN_PROGRESS` | Release restored in a genuinely separate transient environment, resuming from Git state |
+| **P12** | MULTI-CELL NETWORK | `IN_PROGRESS` | Two explicitly opted-in ephemeral cells receive different mutation packets, run independently, and return evidence via PRs |
+| **P13** | PUBLIC LAUNCH | `IN_PROGRESS` | Full Genesis-to-Cell-to-PR flow demonstrated publicly |
 
-## 2. Phase Details & Audit Log
-
-### **PHASE P00 — CONTROL**
-- **Status:** COMPLETE
-- **Files Changed:** `SOVEREIGN_SEED_MASTER_EXECUTION_PLAN.md`
-- **Test Results:** Verified baseline constraints and structural integrity.
+## 2. Architectural Invariants
+- **GitHub = Durable State:** All history, lineage (`memory/lineage.jsonl`), and manifests live in version control.
+- **Single-Shot Lifecycle:** `tools/cell_runner.py` executes exactly one bounded mutation and terminates.
+- **Zero Daemons:** No background listeners, systemd units, or persistent sockets.
