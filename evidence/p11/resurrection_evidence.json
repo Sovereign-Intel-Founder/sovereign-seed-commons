@@ -1,25 +1,13 @@
 {
-  "p11_status": "COMPLETE",
-  "source_commit": "c07423f086811c0a3864bc8168a9d2225dd6711b",
-  "restored_commit": "c07423f086811c0a3864bc8168a9d2225dd6711b",
-  "identity_hash": "fc3f7a4afd3fee1090d8060640d488501b46b66cc9859096dcca9005c8cc1490",
-  "restored_identity_hash": "fc3f7a4afd3fee1090d8060640d488501b46b66cc9859096dcca9005c8cc1490",
-  "memory_hash": "13c0dc6729494b1cf337ba1e79674c513a5752e67ec15b052a632cc920c04be2",
-  "lineage_hash": "193dc8c773aa13c6aae12962b2fd63e930f03ed0734d77845ed43570f91fef56",
-  "active_generation": "20",
-  "bundle_hash": "4d59bb8435dd4439fcfb7813e4a24f39006abd9416d9045628c9fe9da06c102f",
-  "manifest_hash": "9e11e1dd925cd5dd9da972b8fee1d69481d3615a2be21b9adc8f9d3541b42f8d",
-  "commands_executed": [
-    "python3 tools/cell_runner.py package",
-    "git clone <source> <temp_dest>",
-    "python3 tools/cell_runner.py verify",
-    "python3 tools/cell_runner.py dry-run --mutation experiments/mutations/resurrection_test_mutation.json"
-  ],
-  "mutation_result": "SUCCESS",
-  "mutation_output": "[RUNNER] Executing objective: P11 strict resurrection mutation validation\n[DRY-RUN] Validation passed. Skipping physical command execution.\n[TERMINATE] Dry run complete. Exiting cleanly.",
-  "artifact_hashes": {
-    "resurrection_bundle.tar.gz": "4d59bb8435dd4439fcfb7813e4a24f39006abd9416d9045628c9fe9da06c102f",
-    "resurrection_manifest.json": "9e11e1dd925cd5dd9da972b8fee1d69481d3615a2be21b9adc8f9d3541b42f8d"
-  },
-  "verification_passed": true
+  "actual execution command": "python3 tools/cell_runner.py run --mutation experiments/mutations/p11_real_mutation.json",
+  "exit code": 0,
+  "stdout hash": "cd6dcea2679ce7d8325513ef11f9f15f7e4ba1dc5d5cafeb9a3cadb70ea1e519",
+  "stderr hash": "964bcd4f1e7eb7b7b6ba692159975a0b92eb3f17f81bf3a09114933935193bc9",
+  "source commit": "2d2feac3c47af2beb75fbd54a4015982ded68de8",
+  "restored commit": "2d2feac3c47af2beb75fbd54a4015982ded68de8",
+  "identity hash": "022b4991cf13e819725ba3be108c9100c9956f1a437ac569fcb4ad816ee301d4",
+  "memory hash": "23dd37a13543ceb99fa05a7334a70826a1a2e0f8eb5403b3222f80ade80e7a88",
+  "lineage hash": "386b3cc4e47ca4584c19bfe99d8945f2e280853b591bb346eb233aa3bcc680be",
+  "bundle hash": "61df7bbee45578cc76d889bc842ca4df6f87f940b83fd4f6a5970bfa0b3c10e4",
+  "manifest hash": "9e11e1dd925cd5dd9da972b8fee1d69481d3615a2be21b9adc8f9d3541b42f8d"
 }

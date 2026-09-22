@@ -17,7 +17,7 @@ import tarfile
 from pathlib import Path
 
 import os
-SECRET_KEY = os.environ.get("SOVEREIGN_SECRET", "sovereign_ephemeral_key_999").encode("utf-8")
+SECRET_KEY = os.environ["SOVEREIGN_SECRET"].encode("utf-8")
 
 def fail(msg: str) -> None:
     """Print error message to stderr and exit with code 1."""
