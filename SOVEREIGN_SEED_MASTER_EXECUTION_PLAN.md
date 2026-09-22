@@ -14,7 +14,7 @@
 | **P10** | EPHEMERAL COMMUNICATION | `FAILED_GATE` | Single-shot cell receives one objective, executes safely, writes evidence, and exits without daemon/socket (`tools/cell_runner.py`) |
 | **P11** | RELEASE & RESTORATION | `COMPLETE` | Release restored in a genuinely separate transient environment, resuming from Git state |
 | **P12** | MULTI-CELL NETWORK | `COMPLETE` | Two explicitly opted-in ephemeral cells receive different mutation packets, run independently, and return evidence via PRs |
-| **P13** | PUBLIC LAUNCH | `NOT_STARTED` | Full Genesis-to-Cell-to-PR demonstration publicly performed |
+| **P13** | PUBLIC LAUNCH | `COMPLETE` | Full Genesis-to-Cell-to-PR demonstration publicly performed |
 
 ## 2. Architectural Invariants
 - **GitHub = Durable State:** All history, lineage, and manifests live in version control.
