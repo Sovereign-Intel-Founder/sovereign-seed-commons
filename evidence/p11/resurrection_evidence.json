@@ -1,13 +1,13 @@
 {
   "actual execution command": "python3 tools/cell_runner.py run --mutation experiments/mutations/p11_real_mutation.json",
-  "exit code": 0,
-  "stdout hash": "cd6dcea2679ce7d8325513ef11f9f15f7e4ba1dc5d5cafeb9a3cadb70ea1e519",
-  "stderr hash": "964bcd4f1e7eb7b7b6ba692159975a0b92eb3f17f81bf3a09114933935193bc9",
-  "source commit": "2d2feac3c47af2beb75fbd54a4015982ded68de8",
-  "restored commit": "2d2feac3c47af2beb75fbd54a4015982ded68de8",
+  "exit code": 1,
+  "stdout hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr hash": "6bb1d1e5d666db65d360e2f20de688c3a18ceef5757d25e1b322dffb54acd916",
+  "source commit": "a67adb0700e57d23bb5bfa7788c9d42c9f609419",
+  "restored commit": "a67adb0700e57d23bb5bfa7788c9d42c9f609419",
   "identity hash": "022b4991cf13e819725ba3be108c9100c9956f1a437ac569fcb4ad816ee301d4",
   "memory hash": "23dd37a13543ceb99fa05a7334a70826a1a2e0f8eb5403b3222f80ade80e7a88",
   "lineage hash": "386b3cc4e47ca4584c19bfe99d8945f2e280853b591bb346eb233aa3bcc680be",
-  "bundle hash": "61df7bbee45578cc76d889bc842ca4df6f87f940b83fd4f6a5970bfa0b3c10e4",
-  "manifest hash": "9e11e1dd925cd5dd9da972b8fee1d69481d3615a2be21b9adc8f9d3541b42f8d"
+  "bundle hash": "a682e0232e220ad4b5cbb10b81dd1fb383a528b1e4facfc1d539aebc9804d803",
+  "manifest hash": "1fbfd6b825e39b6979131dfaaac71bbf2e849528ecb4387346736e42fec53f4a"
 }
