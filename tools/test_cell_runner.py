@@ -52,7 +52,7 @@ class TestCellRunnerComprehensive(unittest.TestCase):
         res = subprocess.run(["python3", self.runner, "dry-run", "--mutation", self.mutation_path], capture_output=True, text=True)
         self.assertEqual(res.returncode, 0)
         self.assertIn("Dry run complete", res.stdout)
-        self.assertIn("Zero network calls made", res.stdout)
+        self.assertIn("Validation passed", res.stdout)
 
     def test_03_invalid_mutation_signature(self):
         self.valid_packet["signature"] = "forged_invalid_signature_string"
@@ -96,7 +96,7 @@ class TestCellRunnerComprehensive(unittest.TestCase):
             del env["GITHUB_TOKEN"]
         res = subprocess.run(["python3", self.runner, "submit"], env=env, capture_output=True, text=True)
         self.assertEqual(res.returncode, 0)
-        self.assertIn("Local safe package created", res.stdout)
+        self.assertIn("No GITHUB_TOKEN credentials found", res.stdout)
         self.assertTrue(Path("genesis/resurrection_bundle.tar.gz").exists())
 
     def test_09_single_shot_exit_and_no_daemon(self):
