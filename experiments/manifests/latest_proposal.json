@@ -1,0 +1,6 @@
+{
+  "status": "awaiting_pull_request",
+  "hypothesis": "NUMA-local memory allocation reduces instruction overhead.",
+  "evaluator_status": "passed",
+  "action_required": "Human review and governance vote needed before merge."
+}
