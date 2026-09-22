@@ -12,7 +12,7 @@
 | **P03** | STATE VALIDATOR | `COMPLETE` | Positive and negative tamper tests operational |
 | **P04** | SAFE BOUNDED EXECUTION | `COMPLETE` | Single-shot sandbox execution verified |
 | **P10** | EPHEMERAL COMMUNICATION | `FAILED_GATE` | Single-shot cell receives one objective, executes safely, writes evidence, and exits without daemon/socket (`tools/cell_runner.py`) |
-| **P11** | RELEASE & RESTORATION | `NOT_STARTED` | Release restored in a genuinely separate transient environment, resuming from Git state |
+| **P11** | RELEASE & RESTORATION | `COMPLETE` | Release restored in a genuinely separate transient environment, resuming from Git state |
 | **P12** | MULTI-CELL NETWORK | `NOT_STARTED` | Two explicitly opted-in ephemeral cells receive different mutation packets, run independently, and return evidence via PRs |
 | **P13** | PUBLIC LAUNCH | `NOT_STARTED` | Full Genesis-to-Cell-to-PR demonstration publicly performed |
 
