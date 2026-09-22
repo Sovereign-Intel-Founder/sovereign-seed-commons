@@ -7,21 +7,23 @@ import sys
 import signal
 import re
 from pathlib import Path
+from datetime import datetime, timezone
 
 SOCKET_PATH = "/tmp/sovereign_comm.sock"
 LEDGER_PATH = Path("governance/voting_ledger.json")
 
 SECRET = os.environ.get("SOVEREIGN_COMM_SECRET", "").encode("utf-8")
 OBJECTIVE_ID_REGEX = re.compile(r"^[A-Za-z0-9._-]{1,128}$")
+MAX_CLOCK_SKEW_SECONDS = 60
 
-def load_authorized_keys() -> list:
+def load_ledger_weights() -> dict:
     if not LEDGER_PATH.exists():
         print(f"[CRITICAL] Governance ledger missing at {LEDGER_PATH}.", file=sys.stderr)
         sys.exit(1)
     try:
         with open(LEDGER_PATH, "r") as f:
             ledger = json.load(f)
-        return list(ledger.get("weights", {}).keys())
+        return ledger.get("weights", {})
     except Exception as e:
         print(f"[CRITICAL] Failed to parse voting ledger: {e}", file=sys.stderr)
         sys.exit(1)
@@ -46,8 +48,8 @@ def run_daemon():
     signal.signal(signal.SIGINT, cleanup)
     signal.signal(signal.SIGTERM, cleanup)
     
-    authorized_identities = load_authorized_keys()
-    print(f"[COMM] Authorized identities loaded: {authorized_identities}")
+    weights = load_ledger_weights()
+    print(f"[COMM] Authorized voting weights loaded for: {list(weights.keys())}")
     
     if os.path.exists(SOCKET_PATH):
         os.unlink(SOCKET_PATH)
@@ -77,10 +79,28 @@ def run_daemon():
                 signature = packet.get("signature")
                 payload = packet.get("payload")
                 
-                if sender not in authorized_identities:
-                    conn.sendall(b"ERROR: UNAUTHORIZED_SENDER")
+                # 1. Verify Sender has Active Voting Weight (> 0)
+                if sender not in weights or weights[sender] <= 0:
+                    conn.sendall(b"ERROR: ZERO_OR_UNAUTHORIZED_WEIGHT")
                     continue
                 
+                # 2. Enforce Timestamp Freshness (Replay Attack Prevention)
+                pkt_timestamp = payload.get("timestamp")
+                if not pkt_timestamp:
+                    conn.sendall(b"ERROR: MISSING_TIMESTAMP")
+                    continue
+                
+                try:
+                    pkt_dt = datetime.strptime(pkt_timestamp, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+                    now_dt = datetime.now(timezone.utc)
+                    delta_seconds = abs((now_dt - pkt_dt).total_seconds())
+                    if delta_seconds > MAX_CLOCK_SKEW_SECONDS:
+                        conn.sendall(b"ERROR: PACKET_EXPIRED_OR_FUTURE")
+                        continue
+                except ValueError:
+                    conn.sendall(b"ERROR: MALFORMED_TIMESTAMP")
+                    continue
+
                 objective_id = payload.get("objective_id", "")
                 if not OBJECTIVE_ID_REGEX.match(objective_id):
                     conn.sendall(b"ERROR: MALFORMED_OBJECTIVE_ID")
