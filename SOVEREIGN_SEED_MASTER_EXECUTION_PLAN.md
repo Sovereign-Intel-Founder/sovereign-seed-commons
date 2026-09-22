@@ -11,12 +11,12 @@
 | **P02** | IDENTITY, MEMORY, AND LINEAGE | `COMPLETE` | Cryptographic lineage chains established |
 | **P03** | STATE VALIDATOR | `COMPLETE` | Positive and negative tamper tests operational |
 | **P04** | SAFE BOUNDED EXECUTION | `COMPLETE` | Single-shot sandbox execution verified |
-| **P10** | EPHEMERAL COMMUNICATION | `IN_PROGRESS` | Single-shot cell receives objective, runs, writes evidence, and exits without daemon/socket (`tools/cell_runner.py`) |
-| **P11** | RELEASE & RESTORATION | `IN_PROGRESS` | Release restored in a genuinely separate transient environment, resuming from Git state |
-| **P12** | MULTI-CELL NETWORK | `IN_PROGRESS` | Two explicitly opted-in ephemeral cells receive different mutation packets, run independently, and return evidence via PRs |
-| **P13** | PUBLIC LAUNCH | `IN_PROGRESS` | Full Genesis-to-Cell-to-PR flow demonstrated publicly |
+| **P10** | EPHEMERAL COMMUNICATION | `FAILED_GATE` | Single-shot cell receives one objective, executes safely, writes evidence, and exits without daemon/socket (`tools/cell_runner.py`) |
+| **P11** | RELEASE & RESTORATION | `NOT_STARTED` | Release restored in a genuinely separate transient environment, resuming from Git state |
+| **P12** | MULTI-CELL NETWORK | `NOT_STARTED` | Two explicitly opted-in ephemeral cells receive different mutation packets, run independently, and return evidence via PRs |
+| **P13** | PUBLIC LAUNCH | `NOT_STARTED` | Full Genesis-to-Cell-to-PR demonstration publicly performed |
 
 ## 2. Architectural Invariants
-- **GitHub = Durable State:** All history, lineage (`memory/lineage.jsonl`), and manifests live in version control.
+- **GitHub = Durable State:** All history, lineage, and manifests live in version control.
 - **Single-Shot Lifecycle:** `tools/cell_runner.py` executes exactly one bounded mutation and terminates.
 - **Zero Daemons:** No background listeners, systemd units, or persistent sockets.
