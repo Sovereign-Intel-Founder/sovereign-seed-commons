@@ -12,8 +12,8 @@
 | **P03** | STATE VALIDATOR | `COMPLETE` | `validate_state.py` passes positive and negative tamper tests |
 | **P04** | SAFE BOUNDED HEARTBEAT | `COMPLETE` | Bounded heartbeat cycle executes without shell injection or privilege escalation |
 | **P05** | CANDIDATE-TO-PR PIPELINE | `COMPLETE` | Candidate generation produces PR-ready branches without direct activation |
-| **P06** | GITHUB ENFORCEMENT | `IN_PROGRESS` | Branch protections, required checks, and codeowners successfully block direct pushes |
-| **P07** | EVALUATION AND EVIDENCE | `NOT_STARTED` | Machine-readable evidence manifests block invalid code |
+| **P06** | GITHUB ENFORCEMENT | `COMPLETE` | Branch protections, required checks, and codeowners successfully block direct pushes |
+| **P07** | EVALUATION AND EVIDENCE | `IN_PROGRESS` | Machine-readable evidence manifests block invalid code |
 | **P08** | GOVERNANCE | `NOT_STARTED` | Founder voting weights, contributor rules, and voting ledgers operational |
 | **P09** | GENESIS CHAMBER | `NOT_STARTED` | High-performance bare-metal benchmarks and Genesis release archive generated |
 | **P10** | COMMUNICATION | `NOT_STARTED` | GitHub Issues successfully trigger bounded heartbeat objectives |
