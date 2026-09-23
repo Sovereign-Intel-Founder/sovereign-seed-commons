@@ -1,0 +1,15 @@
+{
+  "phase": "P13",
+  "genesis": {
+    "genesis_sha": "9423654ddb9478313c8ebb4a9a8effb121f7ea7d",
+    "network_id": "sovereign-seed-commons-mainnet-1",
+    "timestamp": 1700000000
+  },
+  "mutation": {
+    "action": "GENESIS_PUBLIC_DEMO",
+    "genesis_sha": "9423654ddb9478313c8ebb4a9a8effb121f7ea7d",
+    "data": "SOVEREIGN_SEED_COMMONS_COMPLETE"
+  },
+  "signature": "821536253c2a9d211fd071b8e9b0ab74b7784fa4f79638aa30cd683e40ba2ccf",
+  "status": "VERIFIED_PUBLIC_LAUNCH"
+}

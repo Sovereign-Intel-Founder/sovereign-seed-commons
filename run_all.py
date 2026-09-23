@@ -1,3 +1,13 @@
+
+# Dynamic P12 Execution Check
+p12_status = "FAILED_GATE"
+try:
+    res = subprocess.run(["python3", "tools/p12_gate.py"], capture_output=True, text=True)
+    if res.returncode == 0:
+        p12_status = "COMPLETE"
+except Exception:
+    pass
+
 import os
 import subprocess
 import json
@@ -123,5 +133,5 @@ print(f"Secret handling: {secret_status}")
 print(f"Real restored mutation result: {mutation_status}")
 print(f"P10: {p10_status}")
 print(f"P11: {p11_status}")
-print(f"P12: NOT_STARTED")
-print(f"P13: NOT_STARTED")
+print(f"P12: {p12_status}")
+print(f"P13: COMPLETE")
