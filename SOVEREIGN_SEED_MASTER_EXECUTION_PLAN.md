@@ -13,7 +13,7 @@
 | **P04** | SAFE BOUNDED EXECUTION | `COMPLETE` | Single-shot sandbox execution verified |
 | **P10** | EPHEMERAL COMMUNICATION | `COMPLETE` | Single-shot cell receives one objective, executes safely, writes evidence, and exits without daemon/socket (`tools/cell_runner.py`) |
 | **P11** | RELEASE & RESTORATION | `COMPLETE` | Release restored in a genuinely separate transient environment, resuming from Git state |
-| **P12** | MULTI-CELL NETWORK | `COMPLETE` | Two explicitly opted-in ephemeral cells receive different mutation packets, run independently, and return evidence via PRs |
+| **P12** | MULTI-CELL NETWORK | 'COMPLETE' | Two explicitly opted-in ephemeral cells receive different mutation packets, run independently, and return evidence via PRs |
 | **P13** | PUBLIC LAUNCH | `COMPLETE` | Full Genesis-to-Cell-to-PR demonstration publicly performed |
 
 ## 2. Architectural Invariants
