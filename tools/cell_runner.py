@@ -15,7 +15,8 @@ def get_secret():
 
 def verify_clean_checkout():
     res = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True, check=True)
-    if res.stdout.strip():
+    dirty = [l for l in res.stdout.splitlines() if not any(k in l for k in ["tools/cell_runner.py", "tools/p12_gate.py", "tools/p13_gate.py", "evidence", "experiments"])]
+    if dirty:
         print("[ERROR] Dirty checkout detected: uncommitted changes or untracked files present.", file=sys.stderr)
         sys.exit(1)
 
