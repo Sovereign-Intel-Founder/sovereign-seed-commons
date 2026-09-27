@@ -1,0 +1,10 @@
+{
+  "phase": "P12",
+  "status": "COMPLETE",
+  "cells_executed": [
+    "cell_alpha",
+    "cell_bravo"
+  ],
+  "source commit": "e246ac93e96ba0a2e94038447515338195e5eaa0",
+  "exit code": 0
+}
