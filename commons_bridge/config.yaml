@@ -1,6 +1,0 @@
-# Sovereign Seed Commons Local Cell Configuration
-adapters:
-  - name: "json_rpc_loopback"
-    module: "commons_bridge.adapters.json_rpc_adapter"
-    class: "LocalLoopbackJsonRpcAdapter"
-    host: "127.0.0.1"

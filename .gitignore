@@ -1,3 +1,6 @@
-
-genesis/
-genesis/
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+/tmp/
+.pytest_cache/
