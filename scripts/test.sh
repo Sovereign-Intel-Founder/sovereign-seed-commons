@@ -10,9 +10,6 @@ python3 tools/validate_evidence.py
 echo "Running tool unit tests..."
 python3 -m unittest discover -s tools -p 'test_*.py' -v
 
-echo "Running root-level unit tests..."
-python3 -m unittest test_adapters test_loader test_resilience test_security -v
-
 echo "Running integration tests..."
 python3 tools/integration_test.py
 

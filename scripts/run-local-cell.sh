@@ -1,7 +1,3 @@
 #!/usr/bin/env bash
-set -euo pipefail
-
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$REPO_ROOT"
-
-exec python3 commons_bridge/bridge.py
+export SOVEREIGN_SECRET="${SOVEREIGN_SECRET:-local-test-secret}"
+exec python3 tools/cell_runner.py run
