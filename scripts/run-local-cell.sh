@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
-export SOVEREIGN_SECRET="${SOVEREIGN_SECRET:-local-test-secret}"
-exec python3 tools/cell_runner.py run
+set -e
+echo "=== Launching Participant Cell (127.0.0.1:8999) ==="
+source .venv/bin/activate 2>/dev/null
+python3 commons_bridge/bridge.py

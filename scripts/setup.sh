@@ -1,15 +1,10 @@
 #!/usr/bin/env bash
-set -euo pipefail
-
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$REPO_ROOT"
-
-if ! command -v python3 &> /dev/null; then
-    echo "Error: python3 is required but not installed." >&2
-    exit 1
+set -e
+echo "=== Setting up Sovereign Seed Commons ==="
+python3 -m venv .venv 2>/dev/null
+source .venv/bin/activate 2>/dev/null
+pip install --upgrade pip 2>/dev/null
+if [ -f requirements.txt ]; then
+    pip install -r requirements.txt
 fi
-
-echo "Verifying local evidence and environment..."
-python3 tools/validate_evidence.py
-
-echo "Setup complete successfully. No external dependencies required."
+echo "Setup complete."
