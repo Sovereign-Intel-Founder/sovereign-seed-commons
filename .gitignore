@@ -5,3 +5,5 @@ __pycache__/
 /tmp/
 .pytest_cache/
 logs/
+# Project Memory Logs
+memory/*.jsonl
