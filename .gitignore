@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 genesis/
 genesis/
@@ -13,3 +14,14 @@ genesis/
 *.sqlite3
 __pycache__/
 *.pyc
+=======
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+/tmp/
+.pytest_cache/
+logs/
+# Project Memory Logs
+memory/*.jsonl
+>>>>>>> feat/commons-contributor-workflow
