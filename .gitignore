@@ -1,3 +1,15 @@
 
 genesis/
 genesis/
+
+# Credentials & Environment
+.env
+*.key
+*.pem
+
+# Databases & Runtime Residue
+*.db
+*.sqlite
+*.sqlite3
+__pycache__/
+*.pyc
