@@ -5,3 +5,14 @@ __pycache__/
 .DS_Store
 *.log
 /tmp/
+.env
+*.env.*
+*.key
+*.pem
+*.hex
+local_signing_key.hex
+*.db
+*.sqlite3
+*.cert
+venv/
+.venv/
