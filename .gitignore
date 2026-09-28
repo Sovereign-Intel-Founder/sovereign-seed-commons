@@ -1,27 +1,7 @@
-<<<<<<< HEAD
-
-genesis/
-genesis/
-
-# Credentials & Environment
-.env
-*.key
-*.pem
-
-# Databases & Runtime Residue
-*.db
-*.sqlite
-*.sqlite3
-__pycache__/
-*.pyc
-=======
 __pycache__/
 *.pyc
 *.pyo
+*.swp
 .DS_Store
+*.log
 /tmp/
-.pytest_cache/
-logs/
-# Project Memory Logs
-memory/*.jsonl
->>>>>>> feat/commons-contributor-workflow
