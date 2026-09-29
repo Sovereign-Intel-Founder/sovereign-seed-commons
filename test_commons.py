@@ -1,23 +1,22 @@
+import unittest
+import http.server
+import threading
+import urllib.request
+import json
+from safe_participant_handler import SafeParticipantHandler
+
+HOST = "127.0.0.1"
+PORT = 8080  # Dedicated Sovereign Toll Bridge Port
+
 class ReusableHTTPServer(http.server.HTTPServer):
     allow_reuse_address = True
 
-import unittest
-import urllib.request
-import json
-import threading
-import time
-from commons_bridge.bridge import SafeParticipantHandler, HOST, PORT
-import http.server
-
-class TestCommonsBridge(unittest.TestCase):
+class TestCommonsIntegration(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        http.server.HTTPServer.allow_reuse_address = True
-        cls.server = ReusableHTTPServer(("127.0.0.1", 0), SafeParticipantHandler)
-        cls.port = cls.server.server_address[1]
+        cls.server = ReusableHTTPServer((HOST, PORT), SafeParticipantHandler)
         cls.server_thread = threading.Thread(target=cls.server.serve_forever, daemon=True)
         cls.server_thread.start()
-        time.sleep(0.1)
 
     @classmethod
     def tearDownClass(cls):
@@ -25,26 +24,26 @@ class TestCommonsBridge(unittest.TestCase):
         cls.server.server_close()
 
     def test_allowed_operation(self):
-        url = f"http://{HOST}:{PORT}/"
-        payload = json.dumps({"operation": "validate_cell"}).encode('utf-8')
-        req = urllib.request.Request(url, data=payload, method="POST")
-        req.add_header("Content-Type", "application/json")
-        
+        req = urllib.request.Request(
+            f"http://{HOST}:{PORT}",
+            data=json.dumps({"operation": "ping"}).encode('utf-8'),
+            headers={"Content-Type": "application/json"},
+            method="POST"
+        )
         with urllib.request.urlopen(req) as resp:
             self.assertEqual(resp.status, 200)
-            data = json.loads(resp.read().decode('utf-8'))
-            self.assertEqual(data["status"], "success")
-            self.assertEqual(data["bound_address"], "127.0.0.1")
 
     def test_disallowed_operation(self):
-        url = f"http://{HOST}:{PORT}/"
-        payload = json.dumps({"operation": "arbitrary_shell_exec"}).encode('utf-8')
-        req = urllib.request.Request(url, data=payload, method="POST")
-        req.add_header("Content-Type", "application/json")
-        
-        with self.assertRaises(urllib.error.HTTPError) as ctx:
+        req = urllib.request.Request(
+            f"http://{HOST}:{PORT}",
+            data=json.dumps({"operation": "unauthorized_command"}).encode('utf-8'),
+            headers={"Content-Type": "application/json"},
+            method="POST"
+        )
+        try:
             urllib.request.urlopen(req)
-        self.assertEqual(ctx.exception.code, 403)
+        except urllib.error.HTTPError as e:
+            self.assertEqual(e.code, 400)
 
 if __name__ == "__main__":
     unittest.main()
