@@ -1,0 +1,33 @@
+{
+  "protocol": "Sovereign Intelligence Protocol",
+  "commons_version": "1.0.0",
+  "participation_tiers": {
+    "regular_commons": {
+      "tier_id": 1,
+      "execution_mode": "STANDARD_HEALTH_CHECK",
+      "latency_target_ms": 50.0,
+      "risk_ceiling_usd": 0.0,
+      "telemetry_reporting_interval_sec": 5.0,
+      "data_feed": "mesh_heartbeat",
+      "evidence_return_required": false
+    },
+    "paper_trading": {
+      "tier_id": 2,
+      "execution_mode": "SIMULATION_SHADOW",
+      "latency_target_ms": 15.0,
+      "risk_ceiling_usd": 0.0,
+      "telemetry_reporting_interval_sec": 1.0,
+      "data_feed": "live_shadow_book",
+      "evidence_return_required": true
+    },
+    "arbitrage_testing": {
+      "tier_id": 3,
+      "execution_mode": "LIVE_SIM_AT_RISK",
+      "latency_target_ms": 2.5,
+      "risk_ceiling_usd": 500.0,
+      "telemetry_reporting_interval_sec": 0.1,
+      "data_feed": "direct_rpc_mempool",
+      "evidence_return_required": true
+    }
+  }
+}
