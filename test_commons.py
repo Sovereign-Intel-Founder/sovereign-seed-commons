@@ -1,3 +1,6 @@
+class ReusableHTTPServer(http.server.HTTPServer):
+    allow_reuse_address = True
+
 import unittest
 import urllib.request
 import json
@@ -10,7 +13,8 @@ class TestCommonsBridge(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         http.server.HTTPServer.allow_reuse_address = True
-        cls.server = http.server.HTTPServer((HOST, PORT), SafeParticipantHandler)
+        cls.server = ReusableHTTPServer(("127.0.0.1", 0), SafeParticipantHandler)
+        cls.port = cls.server.server_address[1]
         cls.server_thread = threading.Thread(target=cls.server.serve_forever, daemon=True)
         cls.server_thread.start()
         time.sleep(0.1)
