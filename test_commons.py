@@ -9,6 +9,7 @@ import http.server
 class TestCommonsBridge(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        http.server.HTTPServer.allow_reuse_address = True
         cls.server = http.server.HTTPServer((HOST, PORT), SafeParticipantHandler)
         cls.server_thread = threading.Thread(target=cls.server.serve_forever, daemon=True)
         cls.server_thread.start()
