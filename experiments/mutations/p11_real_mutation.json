@@ -1,6 +1,6 @@
 {
   "mutation_id": "mut-p11-real-execution",
-  "parent_commit": "f94faf6118919f868db78824e8bbf275b5b8d2b0",
+  "parent_commit": "a3db3302ff777e522588058c3919d7b5ebb05c06",
   "objective": "P11 rigorous real mutation execution proof",
   "allowed_paths": [
     "tools/"
@@ -12,5 +12,5 @@
   ],
   "timeout_seconds": 5,
   "submission_policy": "local_only",
-  "signature": "68a8d46a41d7a1443006f83082a6b4288c1d2f29e9556a41a0a477f7ac88c328"
+  "signature": "05adb37fa1d6ed2fe2600aa97a8e11c54e1d98db395159183eab2bcd61121ace"
 }
