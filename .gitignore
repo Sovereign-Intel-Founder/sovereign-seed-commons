@@ -16,3 +16,5 @@ local_signing_key.hex
 *.cert
 venv/
 .venv/
+
+genesis/
