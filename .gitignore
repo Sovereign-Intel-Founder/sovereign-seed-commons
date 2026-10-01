@@ -18,5 +18,4 @@ venv/
 .venv/
 
 genesis/
-evidence/
 experiments/mutations/*.json
