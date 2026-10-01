@@ -19,6 +19,3 @@ venv/
 
 genesis/
 experiments/mutations/*.json
-experiments/mutations/p11_real_mutation.json
-genesis/resurrection_bundle.tar.gz
-genesis/resurrection_manifest.json
