@@ -1,199 +1,161 @@
-"""
-Sovereign Intelligence Protocol (SIP) - Enterprise Security & Cryptographic Verification Engine
-
-Provides production-grade Ed25519 signature verification, Solana Base58 pubkey validation,
-SHA-256 canonical payload verification, timestamp freshness gating, and mainnet safety controls.
-"""
-
 import os
 import time
 import hashlib
+import json
 import logging
-from typing import Optional, Tuple
-import nacl.signing
-import nacl.exceptions
+import secrets
+from typing import Dict, Any, Tuple, Optional
+from nacl.signing import VerifyKey
+from nacl.exceptions import BadSignatureError
 from solders.pubkey import Pubkey
 
 logger = logging.getLogger("SIP.Security")
 
-# Security Constraints
-MAX_TIMESTAMP_DRIFT_SEC: float = 300.0  # 5-minute replay window
-ED25519_SIGNATURE_BYTES_LEN: int = 64
-
-
-class SecurityValidationError(Exception):
-    """Base exception for all security boundary failures."""
-    pass
-
-
-class InvalidSignatureError(SecurityValidationError):
-    """Raised when Ed25519 signature fails cryptographic verification."""
-    pass
-
-
-class MalformedPayloadError(SecurityValidationError):
-    """Raised when payload attributes fail structure or decoding checks."""
-    pass
+# =============================================================================
+# ENTERPRISE SECURITY BOUNDS & CONSTANTS
+# =============================================================================
+MAX_TIMESTAMP_DRIFT_SEC = 300.0
+SUPPORTED_PROTOCOL_VERSIONS = {"sip-v1.0"}
+SUPPORTED_ASSET_TYPES = {"SOL", "USDC", "DATA_FEED"}
+MAX_NONCE_LENGTH = 128
+MAX_TOPIC_LENGTH = 256
+EXPECTED_SIGNATURE_LENGTH = 64
 
 
 def verify_production_safety() -> bool:
     """
-    Enforces environmental safety controls for live Solana mainnet interaction.
-    Fail-safe design: Only explicitly setting '1' allows live execution.
+    Enforces strict environmental safety fail-safes. 
+    Prevents dry-run test environments from connecting to live mainnet routing.
     """
-    mainnet_flag = os.getenv("SIP_MAINNET_LIVE", "0").strip()
-    
-    if mainnet_flag == "1":
-        logger.info("[SAFETY GATE] LIVE MAINNET INGRESS ACTIVE. Settlement enabled.")
+    live_flag = os.getenv("SIP_MAINNET_LIVE", "0").strip().lower()
+    if live_flag in ("1", "true", "yes", "active"):
+        logger.warning("[SAFETY GATE] SIP_MAINNET_LIVE active. Live operational bounds enforced.")
         return True
-        
-    logger.warning(f"[SAFETY GATE] SIP_MAINNET_LIVE='{mainnet_flag}'. Operating in restricted dry-run mode.")
+    logger.info("[SAFETY GATE] SIP_MAINNET_LIVE='0'. Operating in restricted dry-run mode.")
     return False
 
 
-def validate_solana_pubkey(pubkey_str: str) -> Optional[Pubkey]:
+def build_canonical_envelope_bytes(
+    protocol_version: str,
+    client_pubkey: str,
+    nonce: str,
+    timestamp: float,
+    asset_type: str,
+    payload_hash: str,
+    content_type: str,
+    subscription_topic: str
+) -> bytes:
     """
-    Parses and validates a Base58-encoded Solana public key.
+    Constructs a deterministic, sorted, canonical JSON byte string representing 
+    all security-bound fields of the telemetry/subscription envelope.
     
-    Args:
-        pubkey_str: Base58 public key string.
-        
-    Returns:
-        Pubkey object if valid, None if malformed.
+    Any mutation to any of these fields post-signature will result in a 
+    completely different byte string, failing cryptographic verification.
     """
-    if not pubkey_str or not isinstance(pubkey_str, str):
-        logger.error("[PUBKEY VALIDATION] Public key string is empty or invalid type.")
-        return None
+    canonical_dict = {
+        "asset_type": str(asset_type).strip(),
+        "client_pubkey": str(client_pubkey).strip(),
+        "content_type": str(content_type).strip(),
+        "nonce": str(nonce).strip(),
+        "payload_hash": str(payload_hash).strip(),
+        "protocol_version": str(protocol_version).strip(),
+        "subscription_topic": str(subscription_topic).strip(),
+        "timestamp": float(timestamp)
+    }
+    
+    # Deterministic serialization: keys sorted alphabetically, no whitespace padding
+    canonical_json = json.dumps(canonical_dict, sort_keys=True, separators=(",", ":"))
+    return canonical_json.encode("utf-8")
 
+
+def verify_timestamp_freshness(timestamp_sec: float, max_drift: float = MAX_TIMESTAMP_DRIFT_SEC) -> bool:
+    """
+    Validates that a timestamp falls within the allowed clock drift window.
+    Prevents ingestion of extremely stale payloads even if the signature is valid.
+    """
+    now = time.time()
+    diff = abs(now - timestamp_sec)
+    if diff > max_drift:
+        logger.debug(f"[SECURITY] Timestamp drift exceeded. Diff: {diff}s, Max allowed: {max_drift}s")
+        return False
+    return True
+
+
+def validate_solana_pubkey(pubkey_str: str) -> bool:
+    """
+    Validates that a string is a legitimate Base58 encoded Solana public key.
+    Relies on `solders.pubkey` native Rust bindings for maximum exactness.
+    """
     try:
-        return Pubkey.from_string(pubkey_str.strip())
+        if not pubkey_str or not isinstance(pubkey_str, str):
+            return False
+        
+        cleaned_pubkey = pubkey_str.strip()
+        if len(cleaned_pubkey) < 32 or len(cleaned_pubkey) > 44:
+            return False
+            
+        Pubkey.from_string(cleaned_pubkey)
+        return True
     except Exception as e:
-        logger.error(f"[PUBKEY VALIDATION] Invalid Base58 Solana public key '{pubkey_str}': {e}")
-        return None
-
-
-def verify_timestamp_freshness(
-    timestamp_sec: float,
-    max_drift_sec: float = MAX_TIMESTAMP_DRIFT_SEC
-) -> bool:
-    """
-    Validates that request timestamp falls within the allowed execution window.
-    
-    Args:
-        timestamp_sec: Epoch timestamp (in seconds) provided in payload.
-        max_drift_sec: Maximum allowable time difference in seconds.
-        
-    Returns:
-        bool: True if timestamp is fresh, False if expired or far future.
-    """
-    current_time = time.time()
-    drift = abs(current_time - timestamp_sec)
-    
-    if drift > max_drift_sec:
-        logger.error(
-            f"[REPLAY GATE] Timestamp drift exceeded: drift={drift:.2f}s, max={max_drift_sec}s"
-        )
-        return False
-    return True
-
-
-def verify_canonical_hash(payload_bytes: bytes, expected_hash_hex: str) -> bool:
-    """
-    Validates payload integrity against a provided canonical SHA-256 digest.
-    
-    Args:
-        payload_bytes: Raw bytes of the payload.
-        expected_hash_hex: Hex-encoded SHA-256 digest expected.
-        
-    Returns:
-        bool: True if calculated hash matches expected hash.
-    """
-    if not payload_bytes or not expected_hash_hex:
+        logger.debug(f"[SECURITY] Solana public key validation failed: {e}")
         return False
 
-    computed_hash = hashlib.sha256(payload_bytes).hexdigest()
-    if computed_hash.lower() != expected_hash_hex.strip().lower():
-        logger.error(
-            f"[INTEGRITY FAILURE] Canonical hash mismatch: expected={expected_hash_hex}, got={computed_hash}"
-        )
-        return False
-    return True
+
+def verify_payload_hash_constant_time(computed_hash: str, provided_hash: str) -> bool:
+    """
+    Uses Python's secrets.compare_digest to prevent timing attacks when verifying
+    that the hash of the raw payload matches the hash bound inside the envelope.
+    """
+    return secrets.compare_digest(str(computed_hash).lower(), str(provided_hash).lower())
 
 
 def verify_ed25519_envelope(
-    client_pubkey_str: str,
-    message_bytes: bytes,
+    client_pubkey: str,
+    canonical_bytes: bytes,
     signature_hex: str
-) -> bool:
-    """
-    Cryptographically verifies an Ed25519 signed payload envelope against a client's public key.
-    
-    Args:
-        client_pubkey_str: Base58-encoded Solana public key of signer.
-        message_bytes: Raw payload byte array signed by client.
-        signature_hex: Hexadecimal string representation of 64-byte Ed25519 signature.
-        
-    Returns:
-        bool: True if signature is cryptographically valid, False on forgery or corruption.
-    """
-    if not client_pubkey_str or not message_bytes or not signature_hex:
-        logger.error("[SECURITY REJECTION] Null parameter provided to cryptographic verification.")
-        return False
-
-    # 1. Parse Solana Pubkey
-    pubkey = validate_solana_pubkey(client_pubkey_str)
-    if pubkey is None:
-        return False
-
-    # 2. Decode Signature Bytes
-    try:
-        signature_bytes = bytes.fromhex(signature_hex.strip())
-    except ValueError as ve:
-        logger.error(f"[SECURITY REJECTION] Malformed hex in signature: {ve}")
-        return False
-
-    if len(signature_bytes) != ED25519_SIGNATURE_BYTES_LEN:
-        logger.error(
-            f"[SECURITY REJECTION] Invalid signature length: expected {ED25519_SIGNATURE_BYTES_LEN} bytes, got {len(signature_bytes)}"
-        )
-        return False
-
-    # 3. Cryptographic Signature Verification
-    try:
-        verify_key = nacl.signing.VerifyKey(bytes(pubkey))
-        verify_key.verify(message_bytes, signature_bytes)
-        return True
-    except nacl.exceptions.BadSignatureError:
-        logger.error(f"[SECURITY REJECTION] Invalid signature for public key {client_pubkey_str}")
-        return False
-    except Exception as e:
-        logger.error(f"[SECURITY REJECTION] Verification exception: {e}")
-        return False
-
-
-def validate_full_security_envelope(
-    client_pubkey_str: str,
-    message_bytes: bytes,
-    signature_hex: str,
-    timestamp_sec: Optional[float] = None,
-    expected_hash_hex: Optional[str] = None
 ) -> Tuple[bool, str]:
     """
-    Master safety gate executing full multi-factor verification.
+    Cryptographically verifies an Ed25519 signature against the canonical envelope bytes.
     
+    Args:
+        client_pubkey: The Base58 Solana public key string.
+        canonical_bytes: The deterministic UTF-8 byte array of the bound envelope.
+        signature_hex: The hex-encoded 64-byte Ed25519 signature.
+        
     Returns:
-        Tuple[bool, str]: (is_valid, failure_reason)
+        Tuple containing a boolean (True if valid) and a string reason code.
     """
-    if validate_solana_pubkey(client_pubkey_str) is None:
-        return False, "INVALID_SOLANA_PUBLIC_KEY"
+    try:
+        # 1. Pubkey Validation
+        if not validate_solana_pubkey(client_pubkey):
+            return False, "INVALID_SOLANA_PUBKEY"
 
-    if expected_hash_hex and not verify_canonical_hash(message_bytes, expected_hash_hex):
-        return False, "CANONICAL_HASH_MISMATCH"
+        # 2. Signature Presence and Type Checking
+        if not signature_hex or not isinstance(signature_hex, str):
+            return False, "MISSING_OR_INVALID_SIGNATURE_TYPE"
 
-    if timestamp_sec is not None and not verify_timestamp_freshness(timestamp_sec):
-        return False, "TIMESTAMP_DRIFT_EXCEEDED"
+        # 3. Hex Decoding & Length Hardening
+        cleaned_sig_hex = signature_hex.strip()
+        if len(cleaned_sig_hex) % 2 != 0:
+            return False, "MALFORMED_HEX_SIGNATURE_ODD_LENGTH"
+            
+        sig_bytes = bytes.fromhex(cleaned_sig_hex)
+        if len(sig_bytes) != EXPECTED_SIGNATURE_LENGTH:
+            return False, f"INVALID_SIGNATURE_LENGTH_EXPECTED_{EXPECTED_SIGNATURE_LENGTH}"
 
-    if not verify_ed25519_envelope(client_pubkey_str, message_bytes, signature_hex):
-        return False, "INVALID_ED25519_SIGNATURE"
+        # 4. Core Cryptographic Verification via PyNaCl
+        pubkey_obj = Pubkey.from_string(client_pubkey.strip())
+        verify_key = VerifyKey(bytes(pubkey_obj))
 
-    return True, "SUCCESS"
+        verify_key.verify(canonical_bytes, sig_bytes)
+        return True, "OK"
+
+    except ValueError as ve:
+        logger.debug(f"[SECURITY] Hex decoding error in signature: {ve}")
+        return False, "INVALID_HEX_ENCODING"
+    except BadSignatureError:
+        logger.warning(f"[SECURITY] Cryptographic signature mismatch for pubkey: {client_pubkey}")
+        return False, "CRYPTOGRAPHIC_SIGNATURE_MISMATCH"
+    except Exception as e:
+        logger.error(f"[SECURITY] Unhandled verification fault: {e}")
+        return False, "INTERNAL_VERIFICATION_FAULT"
