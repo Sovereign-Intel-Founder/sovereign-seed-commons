@@ -20,4 +20,3 @@ venv/
 genesis/
 evidence/
 experiments/mutations/*.json
-!experiments/mutations/p11_real_mutation.json
