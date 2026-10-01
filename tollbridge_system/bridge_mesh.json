@@ -7,5 +7,21 @@
   "timestamp": 1787776185.5147173,
   "storefront_enabled": true,
   "revenue_share_pct": 15.0,
-  "subscriber_endpoint": "https://edge_node.sip.edge/subscribe"
+  "subscriber_endpoint": "https://edge_node.sip.edge/subscribe",
+  "vault_config": {
+    "payout_wallet": "vault_acc_edge_node_secure_multichain",
+    "supported_assets": [
+      "USDC",
+      "SOL",
+      "ETH",
+      "BTC"
+    ],
+    "settlement_mode": "auto_split_15_85",
+    "security_tier": "isolated_hot_ingress"
+  },
+  "cryptographic_envelopes": {
+    "require_signed_handshake": true,
+    "nonce_sliding_window_sec": 30,
+    "hash_algorithm": "SHA-256"
+  }
 }
