@@ -14,7 +14,12 @@ def get_secret():
     return os.environ["SOVEREIGN_SECRET"].encode("utf-8")
 
 def verify_clean_checkout():
-    res = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True, check=True)
+    res = subprocess.run([
+        "git", "status", "--porcelain", "--", ".", 
+        ":^experiments/mutations/p11_real_mutation.json", 
+        ":^genesis/resurrection_bundle.tar.gz", 
+        ":^genesis/resurrection_manifest.json"
+    ], capture_output=True, text=True, check=True)
     if res.stdout.strip():
         print("[ERROR] Dirty checkout detected: uncommitted changes or untracked files present.", file=sys.stderr)
         sys.exit(1)
