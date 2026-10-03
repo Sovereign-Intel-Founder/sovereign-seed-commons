@@ -19,3 +19,10 @@ venv/
 
 genesis/
 experiments/mutations/*.json
+
+# Log directory and heavy telemetry ignores
+logs/*
+!logs/sample_50_events.jsonl
+*.jsonl
+!logs/sample_50_events.jsonl
+*.db
