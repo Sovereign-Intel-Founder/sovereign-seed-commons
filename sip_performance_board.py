@@ -101,7 +101,10 @@ def main(stdscr):
 
         # Bottom Status Bar
         status_bar = f" [BOARD MODE: ACTIVE TELEMETRY] | Refresh: 500ms | Timestamp: {time.strftime('%H:%M:%S')} | Press 'q' to Quit"
-        stdscr.addstr(height - 1, 0, status_bar.ljust(width)[:width], curses.color_pair(4))
+        try:
+        stdscr.addstr(height - 1, 0, status_bar.ljust(width - 1)[:width - 1], curses.color_pair(4))
+    except curses.error:
+        pass
 
         stdscr.refresh()
         time.sleep(0.5)
