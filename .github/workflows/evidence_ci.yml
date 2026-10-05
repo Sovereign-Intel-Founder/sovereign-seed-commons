@@ -1,0 +1,33 @@
+name: Sovereign Evidence CI
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  validate-evidence:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Verify Governance Ledger
+        run: |
+          python3 -c '
+          import json
+          with open("governance/voting_ledger.json", "r") as f:
+              data = json.load(f)
+          assert "@joshua445" in data["weights"], "Founder key missing from voting ledger!"
+          print("[CI] Governance ledger integrity verified.")
+          '
+
+      - name: Run Evidence Manifest Validator
+        run: |
+          python3 tools/validate_evidence.py

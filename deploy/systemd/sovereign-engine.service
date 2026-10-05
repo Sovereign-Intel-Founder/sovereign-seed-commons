@@ -1,0 +1,16 @@
+[Unit]
+Description=Sovereign Intelligence Protocol Core Engine (C-Optimized)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/joshua445/sovereign-seed-commons
+ExecStart=/home/joshua445/sovereign-seed-commons/src/sovereign_engine
+Restart=on-failure
+RestartSec=5
+LimitNOFILE=65536
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target

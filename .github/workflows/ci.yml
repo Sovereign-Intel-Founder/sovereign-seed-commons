@@ -1,0 +1,45 @@
+name: Commons CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  commons-verification:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Commons Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run Full Unittest Suite
+        run: |
+          python3 -m unittest discover -s . -p 'test_*.py' -v
+
+      - name: Validate Cryptographic Evidence Returns
+        run: |
+          if [ -f "tools/validate_evidence.py" ]; then
+            python3 tools/validate_evidence.py
+          fi
+
+      - name: Validate Participant State
+        run: |
+          if [ -f "tools/validate_state.py" ]; then
+            python3 tools/validate_state.py
+          fi
+
+      - name: Verify Execution Lineage
+        run: |
+          if [ -f "tools/verify_lineage.py" ]; then
+            python3 tools/verify_lineage.py
+          fi
