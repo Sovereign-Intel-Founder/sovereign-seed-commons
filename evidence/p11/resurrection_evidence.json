@@ -3,11 +3,11 @@
   "exit code": 0,
   "stdout hash": "3b24cc1af673f95d20ec0593793437d3a539f3567d27fdf66ba5d11e3c338213",
   "stderr hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-  "source commit": "404541fb02364e9c2ebce56fe994f218fb081ea1",
-  "restored commit": "404541fb02364e9c2ebce56fe994f218fb081ea1",
+  "source commit": "78867d8471b750b6721e3fb2e0d56b08c03d9ab5",
+  "restored commit": "78867d8471b750b6721e3fb2e0d56b08c03d9ab5",
   "identity hash": "022b4991cf13e819725ba3be108c9100c9956f1a437ac569fcb4ad816ee301d4",
   "memory hash": "23dd37a13543ceb99fa05a7334a70826a1a2e0f8eb5403b3222f80ade80e7a88",
   "lineage hash": "386b3cc4e47ca4584c19bfe99d8945f2e280853b591bb346eb233aa3bcc680be",
-  "bundle hash": "07b3833872026d7b499fc8f72fca16a1ee23207e2e08a4f6a0e14ea0e04dfca5",
-  "manifest hash": "87a83c4aa31aba6dbe0139c9a05df93cd70626b9575c99948eefd1502f2c6f3d"
+  "bundle hash": "fc4cabd19b73a8ebcd95cffdafee7d5e223e1791b96b099b5cf33f36a4c4c236",
+  "manifest hash": "73ea92bc622de5bd001cf295fe42ff3c7027024c4a30fd09e9dfc699f937e851"
 }
