@@ -1,0 +1,13 @@
+{
+  "name": "Sovereign Intelligence Protocol Toll Bridge",
+  "url": "https://geography-detailed-bunny-coins.trycloudflare.com",
+  "access_policy": {
+    "current_status": "promotional_free_open",
+    "standard_quota_policy": {
+      "free_uses_for_new_callers": 8,
+      "billing_trigger_request": 9,
+      "description": "First 8 uses are free per unique caller; paid billing begins on the 9th request."
+    }
+  },
+  "capabilities": ["low-latency", "routing", "bot-to-bot-handshake"]
+}
