@@ -1,13 +1,19 @@
-# 🚀 LIVE SIP TOLL BRIDGE: https://ada-approx-financing-express.trycloudflare.com
-
-# 🚀 LIVE SIP TOLL BRIDGE: https://ada-approx-financing-express.trycloudflare.com
-
-# 🚀 LIVE SIP TOLL BRIDGE: https://geography-detailed-bunny-coins.trycloudflare.com
-
 # Sovereign Seed Commons
 
-## Active Live Gateway
-- **URL**: https://fluffy-spiders-find.loca.lt[cite: 5, 8]
+A Git-native execution commons utilizing autonomous protocol cells, structured task manifests, verifiable evidence returns, and automated state resurrection mechanisms.
 
-## Live Gateway
-- **Active URL**: https://fluffy-spiders-find.loca.lt
+## Overview
+
+Sovereign Seed Commons provides the decentralized framework and operational backbone for managing autonomous protocol cells, orchestrating distributed tasks, and ensuring verifiable audit trails.
+
+## Core Components
+
+* **Autonomous Protocol Cells**: Modular, self-contained execution units designed for independent lifecycle management.
+* **Task Manifests**: Strictly typed execution schemas defining inputs, validation gates, and expected outputs.
+* **Evidence Returns**: Cryptographic and telemetry-backed return structures ensuring verifiable execution metrics.
+* **State Resurrection**: Automated recovery and persistence protocols for seamless continuity across node restarts.
+
+## Repository Structure
+
+* `sovereign-seed-commons/`: Core schemas, cell models, and execution contracts.
+* `docs/`: Governance structures, contribution guidelines, and master execution plans.
