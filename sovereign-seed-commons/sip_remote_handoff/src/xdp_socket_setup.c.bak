@@ -1,0 +1,166 @@
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <unistd.h>
+#include <string.h>
+#include <errno.h>
+#include <net/if.h>
+#include <sys/socket.h>
+#include <sys/mman.h>
+#include <linux/if_link.h>
+#include <linux/if_xdp.h>
+
+#define NUM_FRAMES 4096
+#define FRAME_SIZE 2048
+#define UMEM_SIZE (NUM_FRAMES * FRAME_SIZE)
+
+typedef struct {
+    int xsk_fd;
+    void *umem_area;
+    void *rx_map;
+    void *tx_map;
+    void *fill_map;
+    void *comp_map;
+    struct xdp_mmap_offsets off;
+    uint32_t queue_id;
+} sip_xsk_handle_t;
+
+sip_xsk_handle_t *sip_xsk_create_ring(const char *ifname, uint32_t queue_id) {
+    int ifindex = if_nametoindex(ifname);
+    if (ifindex == 0) {
+        perror("if_nametoindex failed");
+        return NULL;
+    }
+
+    sip_xsk_handle_t *xsk = calloc(1, sizeof(sip_xsk_handle_t));
+    if (!xsk) return NULL;
+    xsk->queue_id = queue_id;
+
+    xsk->xsk_fd = socket(AF_XDP, SOCK_RAW, 0);
+    if (xsk->xsk_fd < 0) {
+        perror("AF_XDP socket creation failed");
+        free(xsk);
+        return NULL;
+    }
+
+    xsk->umem_area = aligned_alloc(getpagesize(), UMEM_SIZE);
+    if (!xsk->umem_area) {
+        perror("UMEM allocation failed");
+        close(xsk->xsk_fd);
+        free(xsk);
+        return NULL;
+    }
+
+    struct xdp_umem_reg mr = {
+        .addr = (uint64_t)xsk->umem_area,
+        .len = UMEM_SIZE,
+        .chunk_size = FRAME_SIZE,
+        .headroom = 0
+    };
+
+    if (setsockopt(xsk->xsk_fd, SOL_XDP, XDP_UMEM_REG, &mr, sizeof(mr)) < 0) {
+        perror("setsockopt XDP_UMEM_REG failed");
+        free(xsk->umem_area);
+        close(xsk->xsk_fd);
+        free(xsk);
+        return NULL;
+    }
+
+    uint32_t qe_num = 2048;
+    if (setsockopt(xsk->xsk_fd, SOL_XDP, XDP_RX_RING, &qe_num, sizeof(qe_num)) < 0 ||
+        setsockopt(xsk->xsk_fd, SOL_XDP, XDP_TX_RING, &qe_num, sizeof(qe_num)) < 0 ||
+        setsockopt(xsk->xsk_fd, SOL_XDP, XDP_UMEM_FILL_RING, &qe_num, sizeof(qe_num)) < 0 ||
+        setsockopt(xsk->xsk_fd, SOL_XDP, XDP_UMEM_COMPLETION_RING, &qe_num, sizeof(qe_num)) < 0) {
+        perror("setsockopt ring configuration failed");
+        free(xsk->umem_area);
+        close(xsk->xsk_fd);
+        free(xsk);
+        return NULL;
+    }
+
+    socklen_t optlen = sizeof(xsk->off);
+    if (getsockopt(xsk->xsk_fd, SOL_XDP, XDP_MMAP_OFFSETS, &xsk->off, &optlen) < 0) {
+        perror("getsockopt XDP_MMAP_OFFSETS failed");
+        free(xsk->umem_area);
+        close(xsk->xsk_fd);
+        free(xsk);
+        return NULL;
+    }
+
+    // Map RX Ring
+    xsk->rx_map = mmap(NULL, xsk->off.rx.desc + qe_num * sizeof(struct xdp_desc),
+                       PROT_READ | PROT_WRITE, MAP_SHARED | MAP_POPULATE,
+                       xsk->xsk_fd, XDP_PGOFF_RX_RING);
+    if (xsk->rx_map == MAP_FAILED) {
+        perror("mmap rx ring failed");
+        free(xsk->umem_area);
+        close(xsk->xsk_fd);
+        free(xsk);
+        return NULL;
+    }
+
+    // Map TX Ring
+    xsk->tx_map = mmap(NULL, xsk->off.tx.desc + qe_num * sizeof(struct xdp_desc),
+                       PROT_READ | PROT_WRITE, MAP_SHARED | MAP_POPULATE,
+                       xsk->xsk_fd, XDP_PGOFF_TX_RING);
+    if (xsk->tx_map == MAP_FAILED) {
+        perror("mmap tx ring failed");
+        munmap(xsk->rx_map, xsk->off.rx.desc + qe_num * sizeof(struct xdp_desc));
+        free(xsk->umem_area);
+        close(xsk->xsk_fd);
+        free(xsk);
+        return NULL;
+    }
+
+    // Map Fill Ring
+    xsk->fill_map = mmap(NULL, xsk->off.fr.desc + qe_num * sizeof(uint64_t),
+                         PROT_READ | PROT_WRITE, MAP_SHARED | MAP_POPULATE,
+                         xsk->xsk_fd, XDP_UMEM_PGOFF_FILL_RING);
+    if (xsk->fill_map == MAP_FAILED) {
+        perror("mmap fill ring failed");
+        munmap(xsk->tx_map, xsk->off.tx.desc + qe_num * sizeof(struct xdp_desc));
+        munmap(xsk->rx_map, xsk->off.rx.desc + qe_num * sizeof(struct xdp_desc));
+        free(xsk->umem_area);
+        close(xsk->xsk_fd);
+        free(xsk);
+        return NULL;
+    }
+
+    // Map Completion Ring
+    xsk->comp_map = mmap(NULL, xsk->off.cr.desc + qe_num * sizeof(uint64_t),
+                          PROT_READ | PROT_WRITE, MAP_SHARED | MAP_POPULATE,
+                          xsk->xsk_fd, XDP_UMEM_PGOFF_COMPLETION_RING);
+    if (xsk->comp_map == MAP_FAILED) {
+        perror("mmap completion ring failed");
+        munmap(xsk->fill_map, xsk->off.fr.desc + qe_num * sizeof(uint64_t));
+        munmap(xsk->tx_map, xsk->off.tx.desc + qe_num * sizeof(struct xdp_desc));
+        munmap(xsk->rx_map, xsk->off.rx.desc + qe_num * sizeof(struct xdp_desc));
+        free(xsk->umem_area);
+        close(xsk->xsk_fd);
+        free(xsk);
+        return NULL;
+    }
+
+    struct sockaddr_xdp sxdp = {
+        .sxdp_family = AF_XDP,
+        .sxdp_ifindex = (uint32_t)ifindex,
+        .sxdp_queue_id = queue_id,
+        .sxdp_flags = XDP_USE_NEED_WAKEUP
+    };
+
+    if (bind(xsk->xsk_fd, (struct sockaddr *)&sxdp, sizeof(sxdp)) < 0) {
+        perror("Failed to bind AF_XDP socket");
+        munmap(xsk->comp_map, xsk->off.cr.desc + qe_num * sizeof(uint64_t));
+        munmap(xsk->fill_map, xsk->off.fr.desc + qe_num * sizeof(uint64_t));
+        munmap(xsk->tx_map, xsk->off.tx.desc + qe_num * sizeof(struct xdp_desc));
+        munmap(xsk->rx_map, xsk->off.rx.desc + qe_num * sizeof(struct xdp_desc));
+        free(xsk->umem_area);
+        close(xsk->xsk_fd);
+        free(xsk);
+        return NULL;
+    }
+
+    printf("[SIP_XDP_PRODUCTION] Full zero-copy UMEM, Rings, and Mmap offsets initialized cleanly on %s [Queue %u]\n", ifname, queue_id);
+    return xsk;
+}
