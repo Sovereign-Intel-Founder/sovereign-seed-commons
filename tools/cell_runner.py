@@ -85,3 +85,4 @@ if __name__ == "__main__":
     elif action == "dry-run":
         mutation_arg = sys.argv[sys.argv.index("--mutation") + 1] if "--mutation" in sys.argv else sys.exit(1)
         cmd_dry_run(mutation_arg)
+DEFAULT_BOOTSTRAP_NODE = "http://216.22.11.194:8080"
