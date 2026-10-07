@@ -1,9 +1,1 @@
-[
-  {
-    "data": "SOVEREIGN_SEED_COMMONS_GENESIS",
-    "hash": "8c61eab336c3880c8235c0edfd5f900ac1f9a7f618395527e3c71479cefc0992",
-    "index": 0,
-    "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
-    "timestamp": "2026-09-28T00:00:00Z"
-  }
-]
+{"current_generation": 0}
