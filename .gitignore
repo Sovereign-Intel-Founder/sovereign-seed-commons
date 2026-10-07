@@ -15,3 +15,6 @@ runtime/
 diagnostics/
 ACTIVE_TUNNEL.txt
 active_gateway.txt
+*.egg-info/
+genesis/
+experiments/
