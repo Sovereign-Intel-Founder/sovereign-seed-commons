@@ -1,0 +1,7 @@
+{
+    "node_status": "ACTIVE",
+    "capacity_tier": "BARE_METAL_TIER",
+    "cpu_cores": 128,
+    "gossip_port": 9999,
+    "referral_commission_rate": 0.05
+}
