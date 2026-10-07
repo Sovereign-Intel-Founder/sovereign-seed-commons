@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 from safe_participant_handler import SafeParticipantHandler
 
 HOST = "127.0.0.1"
-PORT = 8080
+PORT = 8085
 
 class ReusableHTTPServer(http.server.HTTPServer):
     allow_reuse_address = True
