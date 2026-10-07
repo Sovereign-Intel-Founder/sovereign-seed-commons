@@ -21,3 +21,9 @@ experiments/
 *.egg-info/
 genesis/
 experiments/
+experiments/
+genesis/
+scripts/.venv/
+.venv/
+*.egg-info/
+.pytest_cache/
