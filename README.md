@@ -1,3 +1,9 @@
+> 🚨 **Active SIP Live Ingress Node:** `https://detective-standard-airplane-mountains.trycloudflare.com/v1/ingress`
+> 
+> *Direct Bare-Metal Endpoint (Ashburn Node) | Protocol Version: SIP/1.0*
+
+---
+
 # Sovereign Seed Commons
 
 A Git-native execution commons utilizing autonomous protocol cells, structured task manifests, verifiable evidence returns, and automated state resurrection mechanisms.
