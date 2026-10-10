@@ -27,3 +27,15 @@ scripts/.venv/
 .venv/
 *.egg-info/
 .pytest_cache/
+
+# Flagship binaries and execution artifacts moved out of Commons
+/sip_gossip_native
+/src/sovereign_engine
+/src/sovereign_master
+/src/shadow_arbitrage
+/src/audit_engine
+/src/massive_bench
+/src/core128_bench
+/src/live_bench
+/sovereign-seed-commons/sip_bridge_daemon
+/sovereign-seed-commons/sip_remote_handoff/sip_benchmark
