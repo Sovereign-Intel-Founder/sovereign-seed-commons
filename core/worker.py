@@ -22,7 +22,18 @@ def execute_task(task_manifest_path: str):
         
     print("[WORKER] Local vault key loaded successfully. Ready for task ingestion.")
     
-    # Placeholder for reading and executing task manifest
+    # Production task manifest ingestion and execution parser
+    import json
+    import os
+
+    manifest_path = getattr(self, 'manifest_path', 'schemas/task_manifest.json')
+    if os.path.exists(manifest_path):
+        with open(manifest_path, 'r') as mf:
+            manifest_data = json.load(mf)
+        print(f"[WORKER] Executing production task manifest from {manifest_path}: {manifest_data.get('task_id', 'unknown')}")
+        self.execute_manifest_payload(manifest_data)
+    else:
+        raise FileNotFoundError(f"Critical task manifest missing at expected path: {manifest_path}")
     evidence = {
         "status": "SUCCESS",
         "timestamp": time.time(),

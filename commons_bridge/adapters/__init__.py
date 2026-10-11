@@ -1,4 +1,4 @@
+from .json_rpc_adapter import LocalloopbackJsonRpcAdapter
 from .base import BaseStreamAdapter
-from .json_rpc_adapter import LocalLoopbackJsonRpcAdapter
 
-__all__ = ["BaseStreamAdapter", "LocalLoopbackJsonRpcAdapter"]
+__all__ = ["LocalloopbackJsonRpcAdapter", "BaseStreamAdapter"]

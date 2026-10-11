@@ -30,6 +30,14 @@ def verify_wal_telemetry(tier_name, config):
     # Tether to SQLite WAL storage backend
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS telemetry_wal_log (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            node_uuid TEXT,
+            payload_blob TEXT,
+            timestamp REAL
+        )
+    ''')
     cursor.execute("PRAGMA journal_mode = WAL;")
     
     # Log cell initialization event

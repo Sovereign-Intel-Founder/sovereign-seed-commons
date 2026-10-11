@@ -39,3 +39,9 @@ scripts/.venv/
 /src/live_bench
 /sovereign-seed-commons/sip_bridge_daemon
 /sovereign-seed-commons/sip_remote_handoff/sip_benchmark
+build/
+venv/
+__pycache__/
+*.pyc
+*.db*
+evidence/bare_metal_2026/raw/
