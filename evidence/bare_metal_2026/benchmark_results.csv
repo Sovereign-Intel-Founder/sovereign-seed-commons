@@ -1,0 +1,2 @@
+experiment_id,capacity,workload_size,duration_us,throughput_ns_per_op,submitted,accepted,rejected,completed,failed,p50_ns,p95_ns,p99_ns,exit_code
+EXP-01,65536,1000000,1886.77,1.89,NOT_REPORTED,1000000,NOT_REPORTED,1000000,NOT_REPORTED,NOT_REPORTED,NOT_REPORTED,NOT_REPORTED,0
