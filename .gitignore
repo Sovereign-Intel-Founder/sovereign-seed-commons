@@ -8,3 +8,5 @@ __pycache__/
 logs/
 *.pid
 .DS_Store
+cloudflare.log
+ingress_8003.log
