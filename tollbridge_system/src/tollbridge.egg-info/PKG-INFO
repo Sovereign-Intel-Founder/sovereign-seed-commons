@@ -1,0 +1,6 @@
+Metadata-Version: 2.4
+Name: tollbridge
+Version: 0.1.0
+Summary: Sovereign Intelligence Protocol Ingress Engine
+Requires-Dist: pynacl
+Requires-Dist: solders
