@@ -1,4 +1,4 @@
-name: Commons CI
+name: CI
 
 on:
   push:
@@ -11,27 +11,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-        cache: 'pip'
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
 
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install cryptography
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-    - name: Run Framework & Tool Validators
-      run: |
-        echo "Running modular framework and tool validation..."
-        if [ -d "tools/validators" ]; then
-          python3 -m unittest discover -s tools/validators || true
-        fi
-        if [ -d "tools" ]; then
-          python3 -m unittest discover -s tools || true
-        fi
-        echo "CI structure check passed successfully."
+      - name: Run Framework & Tool Validators
+        run: |
+          echo "Running modular framework and tool validation..."
+          if [ -d "tools/validators" ]; then
+            python3 -m unittest discover -s tools/validators || true
+          fi
+          if [ -d "tools" ]; then
+            python3 -m unittest discover -s tools || true
+          fi
+          echo "CI structure check passed successfully."
