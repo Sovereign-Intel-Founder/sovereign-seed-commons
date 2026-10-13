@@ -1,0 +1,1 @@
+{"status": "ACTIVE_LOCKFREE_RING", "segment": "/dev/shm/sip_telemetry", "seq": 20330, "ring_saturation": "0.12%", "ipc_latency_ns": 340}
