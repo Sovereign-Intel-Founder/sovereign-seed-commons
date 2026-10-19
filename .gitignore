@@ -10,3 +10,5 @@ logs/
 .DS_Store
 cloudflare.log
 ingress_8003.log
+ingress_production.log
+*.log
